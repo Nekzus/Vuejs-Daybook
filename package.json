@@ -35,6 +35,6 @@
     "pug": "^3.0.2",
     "sass": "^1.51.0",
     "sass-loader": "10",
-    "setimmediate": "^1.0.5"
+    "setimmediate": "^1.0.0"
   }
 }
