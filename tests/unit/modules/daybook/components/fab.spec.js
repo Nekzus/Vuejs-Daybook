@@ -1,5 +1,5 @@
-import { shallowMount } from "@vue/test-utils"
-import Fab from "@/modules/daybook/components/Fab"
+import { shallowMount } from '@vue/test-utils'
+import Fab from '@/modules/daybook/components/Fab'
 
 describe('Pruebas en el Fab component', () => {
     test('debe de mostrar el ícono por defecto', () => {
@@ -10,8 +10,8 @@ describe('Pruebas en el Fab component', () => {
     test('debe de mostrar el ícono por argumento: fa-circle', () => {
         const wrapper = shallowMount(Fab, {
             propsData: {
-                icon: 'fa-circle'
-            }
+                icon: 'fa-circle',
+            },
         })
         const iTag = wrapper.find('i')
         expect(iTag.classes('fa-circle')).toBeTruthy()

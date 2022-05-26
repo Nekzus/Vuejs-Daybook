@@ -1,0 +1,10 @@
+{
+    "userTabs": true,
+    "tabWidth": 4,
+    "semi": false,
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "trailingComma": "all",
+    "vueIndentScriptAndStyle": true,
+    "singleAttributePerLine": true
+}

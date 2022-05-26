@@ -7,4 +7,3 @@ describe('pruebas en el AboutView', () => {
         expect(wrapper.html()).toMatchSnapshot()
     })
 })
-

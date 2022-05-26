@@ -1,16 +1,15 @@
-import { createStore } from "vuex"
+import { createStore } from 'vuex'
 import journal from '@/modules/daybook/store/journal'
-import { journalState } from "../../../../mock-data/test-journal-state"
+import { journalState } from '../../../../mock-data/test-journal-state'
 
-
-const createVuexStore = (initialState) =>
+const createVuexStore = initialState =>
     createStore({
         modules: {
             journal: {
                 ...journal,
                 state: { ...initialState },
-            }
-        }
+            },
+        },
     })
 
 describe('Vuex - Pruebas en el Journal Module', () => {

@@ -9,18 +9,17 @@ describe('pruebas en el HomeView', () => {
 
     test('hacer click en un boton debe de redireccionar a no-entry', () => {
         const mockRouter = {
-            push: jest.fn()
+            push: jest.fn(),
         }
         const wrapper = shallowMount(HomeView, {
             global: {
                 mocks: {
-                    $router: mockRouter
-                }
-            }
+                    $router: mockRouter,
+                },
+            },
         })
         wrapper.find('button').trigger('click')
         expect(mockRouter.push).toHaveBeenCalled()
         expect(mockRouter.push).toHaveBeenCalledWith({ name: 'no-entry' })
     })
 })
-

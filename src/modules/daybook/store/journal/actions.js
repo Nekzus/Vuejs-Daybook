@@ -1,8 +1,8 @@
-import journalApi from "@/api/journalApi"
+import journalApi from '@/api/journalApi'
 
 export const loadEntries = async ({ commit }) => {
     const { data } = await journalApi.get('/entries.json')
-    if(!data) {
+    if (!data) {
         commit('setEntries', [])
         return
     }
@@ -10,7 +10,7 @@ export const loadEntries = async ({ commit }) => {
     for (let id of Object.keys(data)) {
         entries.push({
             id,
-            ...data[id]
+            ...data[id],
         })
     }
     commit('setEntries', entries)

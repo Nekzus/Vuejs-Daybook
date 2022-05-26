@@ -8,7 +8,7 @@ const myCustomModule = {
     state,
     actions,
     getters,
-    mutations
+    mutations,
 }
 
 export default myCustomModule
