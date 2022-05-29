@@ -22,10 +22,7 @@
                     Borrar
                     <i class="fa fa-trash-alt"></i>
                 </button>
-                <button
-                    class="btn btn-primary"
-                    @click="onSelectImage"
-                >
+                <button class="btn btn-primary" @click="onSelectImage">
                     Subir foto
                     <i class="fa fa-upload"></i>
                 </button>
@@ -51,159 +48,153 @@
             class="img-thumbnail"
         />
     </template>
-    <Fab
-        icon="fa-save"
-        @on:click="saveEntry"
-    />
+    <Fab icon="fa-save" @on:click="saveEntry" />
 </template>
 
 <script>
-    import { defineAsyncComponent } from 'vue'
-    import { mapGetters, mapActions } from 'vuex'
-    import Swal from 'sweetalert2'
-    import getDayMonthYear from '../helpers/getDayMonthYear'
-    import uploadImage from '../helpers/uploadImage'
-    export default {
-        name: 'EntryView',
-        props: {
-            id: {
-                type: String,
-                required: true,
-            },
+import { defineAsyncComponent } from 'vue'
+import { mapGetters, mapActions } from 'vuex'
+import Swal from 'sweetalert2'
+import getDayMonthYear from '../helpers/getDayMonthYear'
+import uploadImage from '../helpers/uploadImage'
+export default {
+    name: 'EntryView',
+    props: {
+        id: {
+            type: String,
+            required: true,
         },
-        components: {
-            Fab: defineAsyncComponent(() => import('../components/Fab')),
+    },
+    components: {
+        Fab: defineAsyncComponent(() => import('../components/Fab')),
+    },
+    data() {
+        return {
+            entry: null,
+            localImage: null,
+            file: null,
+        }
+    },
+    computed: {
+        ...mapGetters('journal', ['getEntriesById']),
+        day() {
+            const { day } = getDayMonthYear(this.entry.date)
+            return day
         },
-        data() {
-            return {
-                entry: null,
-                localImage: null,
-                file: null,
-            }
+        month() {
+            const { month } = getDayMonthYear(this.entry.date)
+            return month
         },
-        computed: {
-            ...mapGetters('journal', ['getEntriesById']),
-            day() {
-                const { day } = getDayMonthYear(this.entry.date)
-                return day
-            },
-            month() {
-                const { month } = getDayMonthYear(this.entry.date)
-                return month
-            },
-            yearDay() {
-                const { yearDay } = getDayMonthYear(this.entry.date)
-                return yearDay
-            },
+        yearDay() {
+            const { yearDay } = getDayMonthYear(this.entry.date)
+            return yearDay
         },
-        methods: {
-            ...mapActions('journal', [
-                'updateEntry',
-                'createEntry',
-                'deleteEntry',
-            ]),
-            loadEntry() {
-                let entry
-                if (this.id === 'new') {
-                    entry = {
-                        text: '',
-                        date: new Date().getTime(),
-                    }
-                } else {
-                    entry = this.getEntriesById(this.id)
-                    if (!entry) return this.$router.push({ name: 'no-entry' })
+    },
+    methods: {
+        ...mapActions('journal', ['updateEntry', 'createEntry', 'deleteEntry']),
+        loadEntry() {
+            let entry
+            if (this.id === 'new') {
+                entry = {
+                    text: '',
+                    date: new Date().getTime(),
                 }
-                this.entry = entry
-            },
-            async saveEntry() {
-                new Swal({
+            } else {
+                entry = this.getEntriesById(this.id)
+                if (!entry) return this.$router.push({ name: 'no-entry' })
+            }
+            this.entry = entry
+        },
+        async saveEntry() {
+            Swal.fire({
+                title: 'Espere por favor',
+                allowOutsideClick: false,
+            })
+            Swal.showLoading()
+            const picture = await uploadImage(this.file)
+            this.entry.picture = picture
+
+            if (this.entry.id) {
+                await this.updateEntry(this.entry)
+            } else {
+                const { name } = await this.createEntry(this.entry)
+                await this.$router.push({
+                    name: 'entry',
+                    params: { id: name },
+                })
+            }
+            this.file = null
+            Swal.fire(
+                'Guardado',
+                'La entrada se ha guardado correctamente',
+                'success',
+            )
+        },
+        async onDeleteEntry() {
+            const { isConfirmed } = await Swal.fire({
+                title: '¿Estás seguro?',
+                text: '¡No podrás revertir esto!',
+                showDenyButton: true,
+                confirmButtonText: 'Sí, borrar',
+            })
+
+            if (isConfirmed) {
+                Swal.fire({
                     title: 'Espere por favor',
                     allowOutsideClick: false,
                 })
                 Swal.showLoading()
-                const picture = await uploadImage(this.file)
-                this.entry.picture = picture
+                await this.deleteEntry(this.entry.id)
+                this.$router.push({ name: 'no-entry' })
 
-                if (this.entry.id) {
-                    await this.updateEntry(this.entry)
-                } else {
-                    const { name } = await this.createEntry(this.entry)
-                    await this.$router.push({
-                        name: 'entry',
-                        params: { id: name },
-                    })
-                }
-                this.file = null
-                Swal.fire(
-                    'Guardado',
-                    'La entrada se ha guardado correctamente',
-                    'success',
-                )
-            },
-            async onDeleteEntry() {
-                const { isConfirmed } = await Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: '¡No podrás revertir esto!',
-                    showDenyButton: true,
-                    confirmButtonText: 'Sí, borrar',
-                })
-                if (isConfirmed) {
-                    new Swal({
-                        title: 'Espere por favor',
-                        allowOutsideClick: false,
-                    })
-                    Swal.showLoading()
-                    await this.deleteEntry(this.entry.id)
-                    this.$router.push({ name: 'no-entry' })
-
-                    Swal.fire('Eliminado', '', 'success')
-                }
-            },
-            onSelectedImage(event) {
-                const file = event.target.files[0]
-                if (!file) {
-                    this.localImage = null
-                    this.file = null
-                    return
-                }
-                this.file = file
-                const fr = new FileReader()
-                fr.onload = () => (this.localImage = fr.result)
-                fr.readAsDataURL(file)
-            },
-            onSelectImage() {
-                this.$refs.imageSelector.click()
-            },
+                Swal.fire('Eliminado', '', 'success')
+            }
         },
-        created() {
+        onSelectedImage(event) {
+            const file = event.target.files[0]
+            if (!file) {
+                this.localImage = null
+                this.file = null
+                return
+            }
+            this.file = file
+            const fr = new FileReader()
+            fr.onload = () => (this.localImage = fr.result)
+            fr.readAsDataURL(file)
+        },
+        onSelectImage() {
+            this.$refs.imageSelector.click()
+        },
+    },
+    created() {
+        this.loadEntry()
+    },
+    watch: {
+        id() {
             this.loadEntry()
         },
-        watch: {
-            id() {
-                this.loadEntry()
-            },
-        },
-    }
+    },
+}
 </script>
 
 <style
     lang="scss"
     scoped
 >
-    textarea {
-        font-size: 20px;
-        border: none;
-        height: 100%;
+textarea {
+    font-size: 20px;
+    border: none;
+    height: 100%;
 
-        &focus {
-            outline: none;
-        }
+    &focus {
+        outline: none;
     }
-    img {
-        width: 200px;
-        position: fixed;
-        bottom: 150px;
-        right: 150px;
-        box-shadow: 0px 5px 10px rgba($color: #000000, $alpha: 0.2);
-    }
+}
+img {
+    width: 200px;
+    position: fixed;
+    bottom: 150px;
+    right: 150px;
+    box-shadow: 0px 5px 10px rgba($color: #000000, $alpha: 0.2);
+}
 </style>
