@@ -4,7 +4,6 @@ export const setEntries = (state, entries) => {
 }
 export const updateEntry = (state, entry) => {
     const idx = state.entries.map(e => e.id).indexOf(entry.id)
-    console.log({ idx })
     state.entries[idx] = entry
 }
 export const addEntry = (state, entry) => {
