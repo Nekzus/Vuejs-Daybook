@@ -9,7 +9,7 @@ const createVuexStore = initialState =>
         modules: {
             journal: {
                 ...journal,
-                state: { ...initialState },
+                state: {...initialState },
             },
         },
     })
@@ -38,7 +38,7 @@ describe('Pruebas en el EntryList component', () => {
         expect(wrapper.html()).toMatchSnapshot()
     })
 
-    test('debe de llamar el getEntriesByTerm y filtrar las entradas', async () => {
+    test('debe de llamar el getEntriesByTerm y filtrar las entradas', async() => {
         const input = wrapper.find('input')
         await input.setValue('segunda')
 
