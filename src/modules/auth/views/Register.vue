@@ -80,6 +80,7 @@
         setup() {
             const router = useRouter()
             const { createUser } = useAuth()
+
             const userForm = ref({
                 name: 'Mauricio',
                 email: 'mauricio@gmail.com',
