@@ -1,5 +1,7 @@
 <template>
-    <span class="login100-form-title p-b-41"> Registro </span>
+    <span class="login100-form-title p-b-41">
+        Registro
+    </span>
     <form
         class="login100-form validate-form p-b-33 p-t-5"
         @submit.prevent="onSubmit"
@@ -15,11 +17,9 @@
                 placeholder="Nombre"
                 required
             />
-            <span
-                class="focus-input100"
-                data-placeholder="&#xe82a;"
-            ></span>
+            <span class="focus-input100" data-placeholder="&#xe82a;"></span>
         </div>
+
         <div
             class="wrap-input100 validate-input"
             data-validate="Ingrese correo"
@@ -31,10 +31,7 @@
                 placeholder="Correo"
                 required
             />
-            <span
-                class="focus-input100"
-                data-placeholder="&#xe818;"
-            ></span>
+            <span class="focus-input100" data-placeholder="&#xe818;"></span>
         </div>
 
         <div
@@ -48,17 +45,11 @@
                 placeholder="Contraseña"
                 required
             />
-            <span
-                class="focus-input100"
-                data-placeholder="&#xe80f;"
-            ></span>
+            <span class="focus-input100" data-placeholder="&#xe80f;"></span>
         </div>
 
         <div class="container-login100-form-btn m-t-32">
-            <button
-                type="submit"
-                class="login100-form-btn"
-            >
+            <button type="submit" class="login100-form-btn">
                 Crear cuenta
             </button>
         </div>
@@ -74,8 +65,10 @@
 <script>
     import { ref } from 'vue'
     import { useRouter } from 'vue-router'
-    import useAuth from '@/modules/auth/composables/useAuth'
+    import useAuth from '../composables/useAuth'
+
     import Swal from 'sweetalert2'
+
     export default {
         setup() {
             const router = useRouter()
@@ -89,8 +82,10 @@
 
             return {
                 userForm,
+
                 onSubmit: async () => {
                     const { ok, message } = await createUser(userForm.value)
+
                     if (!ok) Swal.fire('Error', message, 'error')
                     else router.push({ name: 'no-entry' })
                 },
@@ -98,5 +93,3 @@
         },
     }
 </script>
-
-<style></style>

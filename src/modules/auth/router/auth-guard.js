@@ -1,9 +1,11 @@
 import store from '@/store'
 
-const isAuthenticatedGuard = async(to, from, next) => {
+
+const isAuthenticatedGuard = async( to, from, next ) => {
+
     const { ok } = await store.dispatch('auth/checkAuthentication')
 
-    if (ok) next()
+    if ( ok ) next()
     else next({ name: 'login' })
 }
 
