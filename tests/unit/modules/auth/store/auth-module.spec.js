@@ -123,4 +123,51 @@ describe('Vuex: Pruebas en el auth-module', () => {
         expect(typeof token).toBe('string')
         expect(typeof refreshToken).toBe('string')
     })
+    test('Actions: checkAuthentication - POSITIVA', async() => {
+        const store = createVuexStore({
+                status: 'not-authenticated', // 'authenticated','not-authenticated', 'authenticating'
+                user: null,
+                idToken: null,
+                refreshToken: null,
+            })
+            // SignIn del usuario
+        const signInResp = await store.dispatch('auth/signInUser', {
+            email: 'test@test.com',
+            password: '123456',
+        })
+        const { idToken } = store.state.auth
+        store.commit('auth/logout')
+
+        localStorage.setItem('idToken', idToken)
+        const checkResp = await store.dispatch('auth/checkAuthentication')
+        expect(checkResp.ok).toBeTruthy()
+        const { status, user, idToken: token, refreshToken } = store.state.auth
+        expect(status).toBe('authenticated')
+        expect(user).toEqual({
+            name: 'User Test',
+            email: 'test@test.com',
+        })
+        expect(typeof token).toBe('string')
+    })
+    test('Actions: checkAuthentication - NEGATIVA', async() => {
+        const store = createVuexStore({
+            status: 'authenticating', // 'authenticated','not-authenticated', 'authenticating'
+            user: null,
+            idToken: null,
+            refreshToken: null,
+        })
+
+        localStorage.removeItem('idToken')
+        const checkResp1 = await store.dispatch('auth/checkAuthentication')
+        expect(checkResp1).toEqual({ ok: false, message: 'No hay token' })
+        expect(store.state.auth.user).toBeFalsy()
+        expect(store.state.auth.idToken).toBeFalsy()
+        expect(store.state.auth.refreshToken).toBeFalsy()
+        expect(store.state.auth.status).toBe('not-authenticated')
+
+        localStorage.setItem('idToken', 'ABC-123')
+        const checkResp2 = await store.dispatch('auth/checkAuthentication')
+        expect(checkResp2).toEqual({ ok: false, message: 'INVALID_ID_TOKEN' })
+        expect(store.state.auth.status).toBe('not-authenticated')
+    })
 })
