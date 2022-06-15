@@ -1,7 +1,5 @@
 <template>
-    <span class="login100-form-title p-b-41">
-        Ingresar
-    </span>
+    <span class="login100-form-title p-b-41"> Ingresar </span>
     <form
         class="login100-form validate-form p-b-33 p-t-5"
         @submit.prevent="onSubmit"
@@ -17,7 +15,10 @@
                 placeholder="Correo"
                 required
             />
-            <span class="focus-input100" data-placeholder="&#xe82a;"></span>
+            <span
+                class="focus-input100"
+                data-placeholder="&#xe82a;"
+            ></span>
         </div>
 
         <div
@@ -31,13 +32,14 @@
                 placeholder="Contraseña"
                 required
             />
-            <span class="focus-input100" data-placeholder="&#xe80f;"></span>
+            <span
+                class="focus-input100"
+                data-placeholder="&#xe80f;"
+            ></span>
         </div>
 
         <div class="container-login100-form-btn m-t-32">
-            <button class="login100-form-btn">
-                Login
-            </button>
+            <button class="login100-form-btn">Login</button>
         </div>
 
         <div class="container-login100-form-btn m-t-32">
@@ -61,8 +63,8 @@
             const { loginUser } = useAuth()
 
             const userForm = ref({
-                email: 'mauricio@gmail.com',
-                password: '123456',
+                email: '',
+                password: '',
             })
 
             return {

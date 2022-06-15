@@ -90,7 +90,7 @@ describe('Vuex: Pruebas en el auth-module', () => {
         expect(refreshToken).toBeFalsy()
     })
 
-    test('Actions: createUsersignInUser - Crea el usuario', async() => {
+    test('Actions: createUser signInUser - Crea el usuario', async() => {
         const store = createVuexStore({
             status: 'not-authenticated', // 'authenticated','not-authenticated', 'authenticating'
             user: null,
@@ -113,7 +113,7 @@ describe('Vuex: Pruebas en el auth-module', () => {
             )
             // Crear el usuario
         const resp = await store.dispatch('auth/createUser', newUser)
-        expect(resp.ok).toBeTruthy()
+        expect(resp).toEqual({ ok: true })
         const { status, user, idToken: token, refreshToken } = store.state.auth
         expect(status).toBe('authenticated')
         expect(user).toEqual({
